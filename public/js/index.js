@@ -12,6 +12,6 @@ let socket = io();
       console.log('Disconnected from server')
     })
 
-    socket.on('newMessage', (message) => {
-      console.log('New message', message)
+    socket.on('newMessage', message => {
+      console.log('new message', message)
     })
