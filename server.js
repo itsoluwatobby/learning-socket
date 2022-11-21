@@ -3,7 +3,7 @@ const path = require('path')
 const app = express()
 const PORT = 3200
 const socketIO = require('socket.io')
-const { generateMessage } = require('./utils/message')
+const { generateMessage, generateLocationMessage } = require('./utils/message')
 const http = require('http').createServer(app)
 
 app.use(express.json())
@@ -24,6 +24,11 @@ io.on('connection', socket => {
     //io.emit('newMessage', generateMessage(message.from, message.text));
     socket.broadcast.emit('newMessage',  generateMessage(message.from, message.text))
     callback('this is from the server')
+  })
+
+  socket.on('createLocationMessage', (message, callback) => {
+    socket.broadcast.emit('receiveLocation',  generateLocationMessage(message.from, message.text.latitude, message.text.longitude))
+    callback('location shared successfully')
   })
 
   socket.on('disconnect', () => {

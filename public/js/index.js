@@ -15,6 +15,17 @@ let socket = io();
       jQuery('#messages').append(li)
     })
 
+    socket.on('receiveLocation', message => {
+      //console.log('new location', location)
+      //let msg = JSON.parse(message.text)
+      let li = jQuery('<li></li>')
+      let a = jQuery('<a target=_blank>My current location</a>')
+      li.text(`${message.from}: `)
+      a.attr('href', message.url)
+      li.append(a)
+      jQuery('#messages').append(li)
+    })
+
     socket.on('join', message => {
       //console.log('welcome message', message)
 
@@ -22,6 +33,7 @@ let socket = io();
       li.text(`${message.from}: ${message.text}`)
       jQuery('#messages').append(li)
     })
+
     socket.on('joinedChat', message => {
      // console.log('message to room', message)
 
@@ -46,6 +58,24 @@ let socket = io();
         console.log('sent')
       })
       jQuery('[name=message]').val('')
+    })
+
+    let locationButton = jQuery('#send-location')
+    locationButton.on('click', () => {
+      if(!navigator.geolocation){
+        return alert('Geolocation no supported by your browser')
+      }else{
+        navigator.geolocation.getCurrentPosition(position => {
+          let posY = position.coords.longitude
+          let posX = position.coords.latitude
+            alert(`User location is longitude:${posY} and latitude:${posX}`)
+            socket.emit('createLocationMessage', {from: 'User', text:{longitude: posY, latitude: posX}}, (locate) => {
+              console.log(locate)
+            })
+        }, error => {
+          alert('Unable to fetch location')
+        })
+      }
     })
 
     
