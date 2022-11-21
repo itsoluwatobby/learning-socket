@@ -8,6 +8,20 @@
 </head>
 <body>
   <h2 style="text-transform: capitalize;">Welcome to the chat App</h2>
+
+  <ol id="messages"></ol>
+
+  <form id="message-form" style="display: flex; gap:4px; padding:4px; flex-direction: column">
+    <input 
+      type="text"
+      name="message"
+      placeholder="message here" 
+      style="border: none; border-radius: 5px; padding: 8px;" 
+    >
+    <button style="cursor: pointer; padding:4px; background-color:lightgreen; border:none; box-shadow:2px 4px 16px rgba(0,0,0,0.3)">Send</button>
+  </form>
+
+  <script src="./js/libs/jquery-3.6.1.min.js"></script>
 </body>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/index.js"></script>
