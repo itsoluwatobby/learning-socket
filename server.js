@@ -13,6 +13,19 @@ const io = socketIO(http)
 io.on('connection', socket => {
   console.log('New user connected')
 
+  socket.emit('join', {
+    from: 'admin',
+    text: 'welcome to the chat app',
+    createdAt: new Date().getTime()
+  })
+  
+  socket.broadcast.emit('joinedChat', {
+    from: 'admin',
+    text: 'new user joined the chat',
+    createdAt: new Date().getTime()
+  })
+  
+
   socket.on('createMessage', (message) => {
     console.log('create message', message)
     io.emit('newMessage', {
@@ -20,6 +33,11 @@ io.on('connection', socket => {
       text: message.text,
       createdAt: new Date().getTime()
     })
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // })
   })
 
   socket.on('disconnect', () => {

@@ -15,3 +15,10 @@ let socket = io();
     socket.on('newMessage', message => {
       console.log('new message', message)
     })
+
+    socket.on('join', message => {
+      console.log('welcome message', message)
+    })
+    socket.on('joinedChat', message => {
+      console.log('message to room', message)
+    })
