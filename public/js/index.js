@@ -7,28 +7,50 @@ let socket = io();
       console.log('Disconnected from server')
     })
 
+    function scrollToBottom(){
+      let messages = jQuery('#messages')
+      let newMessage = messages.children('li:last-child')
+
+      let clientHeight = messages.prop('clientHeight')
+      let scrollTop = messages.prop('scrollTop')
+      let scrollHeight = messages.prop('scrollHeight')
+
+      let newMessageHeight = newMessage.innerHeight()
+      let lastMessageHeight = newMessage.prev().innerHeight()
+
+      if(clientHeight + scrollTop + lastMessageHeight + newMessageHeight >= scrollHeight){
+        messages.scrollTop(scrollHeight)
+      }
+    }
+
     socket.on('newMessage', message => {
       let formattedTime = moment(message.createdAt).format('h:mm a')
+      let template = jQuery('#message-template').html()
+      let html = Mustache.render(template, {
+        text: message.text,
+        from: message.from,
+        createdAt: formattedTime
+      })
 
-      let li = jQuery('<li></li>')
-      li.text(`${message.from} ${formattedTime}: ${message.text}`)
-      jQuery('#messages').append(li)
+      jQuery("#messages").append(html)
+      scrollToBottom()
     })
 
     socket.on('receiveLocation', message => {
-      //console.log('new location', location)
       let formattedTime = moment(message.createdAt).format('h:mm a')
-      //let msg = JSON.parse(message.text)
-      let li = jQuery('<li></li>')
-      let a = jQuery('<a target=_blank>My current location</a>')
-      li.text(`${message.from} ${formattedTime}: `)
-      a.attr('href', message.url)
-      li.append(a)
-      jQuery('#messages').append(li)
+  
+      let template = jQuery('#location-template').html()
+      let html = Mustache.render(template, {
+        url: message.url,
+        from: message.from,
+        createdAt: formattedTime
+      })
+
+      jQuery("#messages").append(html)
+      scrollToBottom()
     })
 
     socket.on('join', message => {
-      //console.log('welcome message', message)
       let formattedTime = moment(message.createdAt).format('h:mm a')
 
       let li = jQuery('<li></li>')
@@ -37,8 +59,6 @@ let socket = io();
     })
 
     socket.on('joinedChat', message => {
-     // console.log('message to room', message)
-
       let li = jQuery('<li></li>')
       li.text(`${message.from}: ${message.text}`)
       jQuery('#messages').append(li)
